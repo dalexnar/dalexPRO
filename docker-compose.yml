@@ -1,0 +1,29 @@
+# DALEX - Docker Compose
+# NO incluye Ollama (usa el del host)
+
+version: '3.8'
+
+services:
+  dalex:
+    build: .
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./data:/app/data
+      - ./skills:/app/skills:ro
+      - ./config:/app/config:ro
+    env_file:
+      - .env
+    environment:
+      - DALEX_MODE=${DALEX_MODE:-lite}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:7b}
+      - API_PORT=8000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

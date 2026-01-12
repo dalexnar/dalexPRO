@@ -1,0 +1,45 @@
+# DALEX - Configuración Base
+# Variables de entorno tienen PRIORIDAD sobre este archivo
+
+agente:
+  nombre: "DALEX"
+  version: "0.5.0"
+  modo: "lite"  # "lite" o "pro" - ENV: DALEX_MODE
+  carpeta_skills: "./skills"
+  timeout_llm: 120
+  max_pasos: 10
+
+llm:
+  # ENV: OLLAMA_HOST, OLLAMA_MODEL tienen prioridad
+  ollama:
+    url: "http://localhost:11434"
+    modelo: "qwen2.5:7b"
+    habilitado: true
+
+base_datos:
+  # ENV: DATABASE_URL tiene prioridad
+  url: "sqlite:///./data/dalex.db"
+
+api:
+  # ENV: API_HOST, API_PORT tienen prioridad
+  host: "0.0.0.0"
+  puerto: 8000
+
+# Solo aplica en modo "pro"
+memoria:
+  episodica:
+    habilitada: true
+    max_registros: 10000
+  semantica:
+    habilitada: true
+    directorio: "./data/chromadb"
+    coleccion: "dalex_memoria"
+    max_resultados: 5
+  errores:
+    habilitada: true
+    max_registros: 5000
+    umbral_autocorreccion: 2
+
+auditoria:
+  habilitado: true
+  nivel: "completo"

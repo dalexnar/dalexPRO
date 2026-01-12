@@ -1,0 +1,21 @@
+# DALEX - Dependencias
+# Instalación: pip install -r requirements.txt
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Configuración
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+pyyaml>=6.0.0
+
+# Base de datos
+sqlalchemy>=2.0.0
+
+# HTTP Client (para Ollama)
+httpx>=0.26.0
+
+# Memoria semántica (opcional, modo pro)
+# Descomentar si usas modo pro:
+ chromadb>=0.4.0
