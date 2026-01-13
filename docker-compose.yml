@@ -10,7 +10,7 @@ services:
       - "${API_PORT:-8000}:8000"
     volumes:
       - ./data:/app/data
-      - ./skills:/app/skills:ro
+      - ./skills:/app/skills
       - ./config:/app/config:ro
     env_file:
       - .env

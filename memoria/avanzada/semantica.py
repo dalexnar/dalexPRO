@@ -286,3 +286,109 @@ class MemoriaSemantica:
         except Exception as e:
             # No romper la inicialización si falla la limpieza
             print(f"⚠ Error durante limpieza de memoria semántica: {e}")
+
+    # === MÉTODOS PARA GESTIÓN DE DOCUMENTOS ===
+
+    def listar_documentos(self) -> List[dict]:
+        """
+        Lista todos los documentos indexados (tipo='documento').
+        Agrupa chunks por nombre_archivo y retorna información consolidada.
+        """
+        if not self._inicializado:
+            return []
+
+        try:
+            # Obtener todos los documentos con tipo='documento'
+            todos = self._coleccion.get(
+                where={"tipo": "documento"}
+            )
+
+            if not todos or not todos["ids"]:
+                return []
+
+            # Agrupar chunks por nombre_archivo
+            documentos_map = {}
+
+            for i, doc_id in enumerate(todos["ids"]):
+                metadata = todos["metadatas"][i] if todos["metadatas"] else {}
+                nombre_archivo = metadata.get("nombre_archivo", "desconocido")
+
+                if nombre_archivo not in documentos_map:
+                    documentos_map[nombre_archivo] = {
+                        "id": metadata.get("doc_id", doc_id),  # ID del documento (no del chunk)
+                        "nombre": nombre_archivo,
+                        "tipo": metadata.get("tipo_archivo", "desconocido"),
+                        "chunks": 0,
+                        "fecha": metadata.get("timestamp", "")
+                    }
+
+                documentos_map[nombre_archivo]["chunks"] += 1
+
+            # Convertir a lista
+            return list(documentos_map.values())
+
+        except Exception as e:
+            print(f"Error listando documentos: {e}")
+            return []
+
+    def eliminar_documento(self, doc_id: str) -> bool:
+        """
+        Elimina un documento y todos sus chunks de ChromaDB.
+
+        Args:
+            doc_id: ID del documento (no del chunk individual)
+
+        Returns:
+            True si se eliminó correctamente, False en caso contrario
+        """
+        if not self._inicializado:
+            return False
+
+        try:
+            # Buscar todos los chunks con este doc_id
+            resultados = self._coleccion.get(
+                where={"doc_id": doc_id}
+            )
+
+            if not resultados or not resultados["ids"]:
+                return False
+
+            # Eliminar todos los chunks
+            self._coleccion.delete(ids=resultados["ids"])
+
+            return True
+
+        except Exception as e:
+            print(f"Error eliminando documento {doc_id}: {e}")
+            return False
+
+    def agregar_documento_chunk(
+        self,
+        contenido: str,
+        doc_id: str,
+        nombre_archivo: str,
+        tipo_archivo: str,
+        chunk_index: int
+    ) -> Optional[str]:
+        """
+        Agrega un chunk de documento con metadata específica.
+
+        Args:
+            contenido: Contenido del chunk
+            doc_id: ID único del documento (compartido por todos los chunks)
+            nombre_archivo: Nombre del archivo original
+            tipo_archivo: Extensión del archivo (pdf, txt, docx)
+            chunk_index: Índice del chunk dentro del documento
+
+        Returns:
+            ID del chunk agregado, o None si falló
+        """
+        metadata = {
+            "tipo": "documento",
+            "doc_id": doc_id,
+            "nombre_archivo": nombre_archivo,
+            "tipo_archivo": tipo_archivo,
+            "chunk_index": chunk_index
+        }
+
+        return self.agregar(contenido, metadata)

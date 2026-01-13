@@ -9,6 +9,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.rutas import router
+from api.rutas_documentos import router as router_documentos
+from api.rutas_skills import router as router_skills
 from config.settings import config
 from core.agente import agente
 from memoria.base import inicializar_base_datos
@@ -58,7 +60,9 @@ app.add_middleware(
 )
 
 # Rutas
-app.include_router(router)
+app.include_router(router, prefix="/api")
+app.include_router(router_documentos, prefix="/api")
+app.include_router(router_skills, prefix="/api")
 
 
 @app.get("/")

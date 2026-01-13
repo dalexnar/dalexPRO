@@ -124,7 +124,7 @@ class CatalogoSkills:
         """Genera texto de skills para incluir en prompts."""
         if not self.skills:
             return "No hay skills disponibles."
-        
+
         lineas = ["Skills disponibles:"]
         for skill in self.skills.values():
             entradas_str = ", ".join(
@@ -132,5 +132,9 @@ class CatalogoSkills:
             ) or "ninguna"
             lineas.append(f"- {skill.nombre}: {skill.descripcion[:100]}")
             lineas.append(f"  Entradas: {entradas_str}")
-        
+
         return "\n".join(lineas)
+
+    def reescanear(self) -> int:
+        """Reescanea el catálogo de skills."""
+        return self.escanear()

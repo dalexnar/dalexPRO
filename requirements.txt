@@ -19,3 +19,8 @@ httpx>=0.26.0
 # Memoria semántica (opcional, modo pro)
 # Descomentar si usas modo pro:
  chromadb>=0.4.0
+
+# Procesamiento de documentos
+python-multipart>=0.0.6
+PyPDF2>=3.0.0
+python-docx>=1.1.0

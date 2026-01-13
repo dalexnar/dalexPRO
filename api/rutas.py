@@ -10,6 +10,8 @@ from core.gestor_planes import gestor_planes
 from memoria import crear_sesion, obtener_sesion
 from memoria.avanzada import gestor_memoria
 from config.settings import config
+from api.rutas_skills import router as router_skills
+from api.rutas_documentos import router as router_documentos
 
 router = APIRouter()
 

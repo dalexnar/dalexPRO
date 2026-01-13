@@ -74,7 +74,7 @@ class Config:
     
     @property
     def carpeta_skills(self) -> str:
-        return self._get("agente", "carpeta_skills", default="./skills")
+        return self._get("agente", "carpeta_skills", default="/app/data/skills")
     
     @property
     def timeout_llm(self) -> int:
